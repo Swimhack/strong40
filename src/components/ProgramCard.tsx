@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar, Users, Target, Star } from "lucide-react";
+import { ProgramModal } from "./ProgramModal";
 
 interface ProgramCardProps {
   title: string;
@@ -24,6 +26,7 @@ export const ProgramCard = ({
   image,
   isPopular
 }: ProgramCardProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const getDifficultyColor = (level: string) => {
     switch (level) {
       case "Beginner": return "bg-green-500/20 text-green-700 dark:text-green-400";
@@ -86,10 +89,19 @@ export const ProgramCard = ({
           </div>
         </div>
 
-        <Button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold">
+        <Button 
+          className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold"
+          onClick={() => setIsModalOpen(true)}
+        >
           Start Program
         </Button>
       </CardContent>
+      
+      <ProgramModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        program={{ title, description, duration, participants, difficulty, image }}
+      />
     </Card>
   );
 };

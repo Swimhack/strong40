@@ -4,7 +4,7 @@ import { Play, Clock, Users, Star, TrendingUp } from "lucide-react";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { ProgramCard } from "@/components/ProgramCard";
 import { BottomNavigation } from "@/components/BottomNavigation";
-import heroImage from "@/assets/hero-strong-man.jpg";
+import heroImage from "@/assets/hero-strong-man-new.jpg";
 import strengthImage from "@/assets/workout-strength.jpg";
 import recoveryImage from "@/assets/workout-recovery.jpg";
 import mindsetImage from "@/assets/workout-mindset.jpg";
@@ -139,7 +139,7 @@ const Index = () => {
       </section>
 
       {/* Value Proposition Section */}
-      <section className="py-20 px-4 bg-primary/5">
+      <section id="value-section" className="py-20 px-4 bg-primary/5">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-12">
             Transform Into The <span className="text-accent">Strong Man You're Meant To Be</span>

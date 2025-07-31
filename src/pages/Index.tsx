@@ -4,7 +4,7 @@ import { Play, Clock, Users, Star, TrendingUp } from "lucide-react";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { ProgramCard } from "@/components/ProgramCard";
 import { BottomNavigation } from "@/components/BottomNavigation";
-import { TeamSignupForm } from "@/components/TeamSignupForm";
+import TeamSignupModal from "@/components/TeamSignupModal";
 import heroImage from "@/assets/hero-strong-man-new.jpg";
 import strengthImage from "@/assets/workout-strength.jpg";
 import recoveryImage from "@/assets/workout-recovery.jpg";
@@ -89,7 +89,7 @@ const Index = () => {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <TeamSignupForm 
+            <TeamSignupModal 
               trigger={
                 <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-8 py-3 text-lg">
                   <Play className="w-5 h-5 mr-2" />

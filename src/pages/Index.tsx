@@ -4,6 +4,7 @@ import { Play, Clock, Users, Star, TrendingUp } from "lucide-react";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { ProgramCard } from "@/components/ProgramCard";
 import { BottomNavigation } from "@/components/BottomNavigation";
+import { TeamSignupForm } from "@/components/TeamSignupForm";
 import heroImage from "@/assets/hero-strong-man-new.jpg";
 import strengthImage from "@/assets/workout-strength.jpg";
 import recoveryImage from "@/assets/workout-recovery.jpg";
@@ -88,11 +89,20 @@ const Index = () => {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-8 py-3 text-lg">
-              <Play className="w-5 h-5 mr-2" />
-              Start Your Legacy
-            </Button>
-            <Button variant="outline" size="lg" className="border-white text-white hover:bg-white/10 hover:border-white/80 font-semibold px-8 py-3 text-lg backdrop-blur-sm">
+            <TeamSignupForm 
+              trigger={
+                <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-8 py-3 text-lg">
+                  <Play className="w-5 h-5 mr-2" />
+                  Start Your Legacy
+                </Button>
+              }
+            />
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="border-white text-white hover:bg-white/10 hover:border-white/80 font-semibold px-8 py-3 text-lg backdrop-blur-sm"
+              onClick={() => document.getElementById('value-section')?.scrollIntoView({ behavior: 'smooth' })}
+            >
               Learn More
             </Button>
           </div>

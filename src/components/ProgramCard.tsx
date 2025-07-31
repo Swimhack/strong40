@@ -37,7 +37,7 @@ export const ProgramCard = ({
   };
 
   return (
-    <Card className="group hover:shadow-xl transition-all duration-300 hover:scale-[1.02] relative overflow-hidden">
+    <Card className="group hover:shadow-xl transition-shadow duration-300 relative">
       {isPopular && (
         <div className="absolute top-4 right-4 z-10">
           <Badge className="bg-accent text-accent-foreground font-semibold">
@@ -46,11 +46,11 @@ export const ProgramCard = ({
         </div>
       )}
       
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-48">
         <img 
           src={image} 
           alt={title}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
         
@@ -90,8 +90,9 @@ export const ProgramCard = ({
         </div>
 
         <Button 
-          className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold"
+          className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold min-h-[44px]"
           onClick={() => setIsModalOpen(true)}
+          aria-label={`View details for ${title}`}
         >
           Start Program
         </Button>

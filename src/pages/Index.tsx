@@ -43,7 +43,7 @@ const programsData = [
 
 const Index = () => {
   return (
-    <div className="min-h-screen relative overflow-hidden pb-20">
+    <div className="min-h-screen relative pb-20">
       {/* Hero Section */}
       <div className="relative h-screen flex items-center justify-center">
         {/* Background Image */}
@@ -91,7 +91,11 @@ const Index = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <TeamSignupModal 
               trigger={
-                <Button size="lg" className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-8 py-3 text-lg">
+                <Button 
+                  size="lg" 
+                  className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold px-8 py-3 text-lg min-h-[44px]"
+                  aria-label="Start your legacy transformation program"
+                >
                   <Play className="w-5 h-5 mr-2" />
                   Start Your Legacy
                 </Button>
@@ -100,8 +104,9 @@ const Index = () => {
             <Button 
               variant="outline" 
               size="lg" 
-              className="border-white text-white hover:bg-white/10 hover:border-white/80 font-semibold px-8 py-3 text-lg backdrop-blur-sm"
+              className="border-white text-white hover:bg-white/10 hover:border-white/80 font-semibold px-8 py-3 text-lg backdrop-blur-sm min-h-[44px]"
               onClick={() => document.getElementById('value-section')?.scrollIntoView({ behavior: 'smooth' })}
+              aria-label="Learn more about our programs"
             >
               Learn More
             </Button>

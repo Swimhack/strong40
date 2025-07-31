@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
+import { useEffect } from "react";
 
 interface ProgramModalProps {
   isOpen: boolean;
@@ -18,6 +19,24 @@ interface ProgramModalProps {
 }
 
 export const ProgramModal = ({ isOpen, onClose, program }: ProgramModalProps) => {
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'hidden';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   const handleStartProgram = () => {
@@ -38,8 +57,17 @@ export const ProgramModal = ({ isOpen, onClose, program }: ProgramModalProps) =>
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div 
+      className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <Card 
+        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         <CardContent className="p-0">
           {/* Header with close button */}
           <div className="relative">
@@ -51,7 +79,8 @@ export const ProgramModal = ({ isOpen, onClose, program }: ProgramModalProps) =>
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 p-2 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors"
+              className="absolute top-4 right-4 p-2 bg-black/50 rounded-full text-white hover:bg-black/70 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+              aria-label="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
@@ -65,7 +94,7 @@ export const ProgramModal = ({ isOpen, onClose, program }: ProgramModalProps) =>
           {/* Content */}
           <div className="p-6">
             <div className="mb-6">
-              <h2 className="text-3xl font-bold mb-3">{program.title}</h2>
+              <h2 id="modal-title" className="text-3xl font-bold mb-3">{program.title}</h2>
               <p className="text-muted-foreground text-lg leading-relaxed">
                 {program.description}
               </p>
@@ -119,10 +148,21 @@ export const ProgramModal = ({ isOpen, onClose, program }: ProgramModalProps) =>
 
             {/* Action Buttons */}
             <div className="flex gap-3">
-              <Button onClick={handleStartProgram} className="flex-1" size="lg">
+              <Button 
+                onClick={handleStartProgram} 
+                className="flex-1 min-h-[44px]" 
+                size="lg"
+                aria-label={`Start ${program.title} program`}
+              >
                 Start Program
               </Button>
-              <Button variant="outline" onClick={onClose} size="lg">
+              <Button 
+                variant="outline" 
+                onClick={onClose} 
+                size="lg"
+                className="min-h-[44px]"
+                aria-label="Close and learn more later"
+              >
                 Learn More
               </Button>
             </div>

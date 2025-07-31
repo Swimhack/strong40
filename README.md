@@ -1,4 +1,4 @@
-# Welcome to your Lovable project
+# STRONG40 - Elite Fitness for Men Over 40
 
 ## Project info
 

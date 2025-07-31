@@ -31,7 +31,7 @@ const programsData = [
   },
   {
     title: "Elite Performance",
-    description: "Advanced 7-day intensive for experienced athletes looking to push their limits and achieve peak performance.",
+    description: "Advanced 7-day intensive for dedicated men looking to push their limits and achieve peak performance.",
     duration: "7 Days",
     participants: "Proven Methods",
     rating: 0,
@@ -68,7 +68,7 @@ const Index = () => {
           </h2>
           
           <p className="text-xl md:text-2xl text-white/90 mb-8 leading-relaxed max-w-2xl mx-auto">
-            For men 40+ who refuse to settle. Build the body and mindset that commands respect.
+            For men 40+ ready to become unstoppable. Build the body and mindset that commands respect.
           </p>
 
           {/* Hero Stats */}
@@ -104,13 +104,13 @@ const Index = () => {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <Badge className="bg-accent/10 text-accent border-accent/20 mb-4">
-              TOP WORKOUTS FOR 40+
+              YOUR PATH TO STRENGTH
             </Badge>
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Discover Your Next <span className="text-accent">Challenge</span>
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Carefully curated workouts designed for the mature athlete who demands excellence.
+              Carefully curated workouts designed for men 40+ ready for excellence.
             </p>
           </div>
 
@@ -142,7 +142,7 @@ const Index = () => {
       <section className="py-20 px-4 bg-primary/5">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-12">
-            Built For <span className="text-accent">Strong Men 40+</span>
+            Transform Into The <span className="text-accent">Strong Man You're Meant To Be</span>
           </h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">

@@ -14,8 +14,8 @@ const programsData = [
     title: "The Legacy Transformation",
     description: "A complete 30-day program designed for men 40+ to build lasting strength, confidence, and leadership qualities.",
     duration: "30 Days",
-    participants: "1.2k+ Members",
-    rating: 4.8,
+    participants: "Expert-Designed",
+    rating: 0,
     difficulty: "Intermediate" as const,
     image: strengthImage,
     isPopular: true
@@ -24,8 +24,8 @@ const programsData = [
     title: "Foundation Builder",
     description: "Perfect for beginners. Establish proper movement patterns and build a solid fitness foundation over 14 days.",
     duration: "14 Days",
-    participants: "850+ Members",
-    rating: 4.6,
+    participants: "Science-Based",
+    rating: 0,
     difficulty: "Beginner" as const,
     image: recoveryImage
   },
@@ -33,8 +33,8 @@ const programsData = [
     title: "Elite Performance",
     description: "Advanced 7-day intensive for experienced athletes looking to push their limits and achieve peak performance.",
     duration: "7 Days",
-    participants: "420+ Members",
-    rating: 4.9,
+    participants: "Proven Methods",
+    rating: 0,
     difficulty: "Advanced" as const,
     image: mindsetImage
   }
@@ -138,29 +138,29 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Value Proposition Section */}
       <section className="py-20 px-4 bg-primary/5">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-12">
-            Join The <span className="text-accent">Brotherhood</span>
+            Built For <span className="text-accent">Strong Men 40+</span>
           </h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div className="space-y-2">
-              <div className="text-3xl md:text-4xl font-bold text-accent">5,000+</div>
-              <div className="text-muted-foreground">Strong Men</div>
+              <div className="text-3xl md:text-4xl font-bold text-accent">Expert</div>
+              <div className="text-muted-foreground">Developed</div>
             </div>
             <div className="space-y-2">
-              <div className="text-3xl md:text-4xl font-bold text-accent">50M+</div>
-              <div className="text-muted-foreground">Pounds Lifted</div>
+              <div className="text-3xl md:text-4xl font-bold text-accent">Science</div>
+              <div className="text-muted-foreground">Based</div>
             </div>
             <div className="space-y-2">
-              <div className="text-3xl md:text-4xl font-bold text-accent">4.8★</div>
-              <div className="text-muted-foreground">Average Rating</div>
+              <div className="text-3xl md:text-4xl font-bold text-accent">Premium</div>
+              <div className="text-muted-foreground">Content</div>
             </div>
             <div className="space-y-2">
-              <div className="text-3xl md:text-4xl font-bold text-accent">24/7</div>
-              <div className="text-muted-foreground">Support</div>
+              <div className="text-3xl md:text-4xl font-bold text-accent">Results</div>
+              <div className="text-muted-foreground">Focused</div>
             </div>
           </div>
         </div>

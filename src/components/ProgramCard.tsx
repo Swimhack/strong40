@@ -79,12 +79,8 @@ export const ProgramCard = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center justify-center">
           <div className="flex items-center gap-1">
-            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-            <span className="text-sm font-medium">{rating}</span>
-          </div>
-          <div className="flex items-center gap-1 ml-auto">
             <Target className="w-4 h-4 text-accent" />
             <span className="text-sm text-accent font-medium">Goal Focused</span>
           </div>

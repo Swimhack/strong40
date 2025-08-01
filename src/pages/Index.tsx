@@ -1,47 +1,70 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Play, Clock, Users, Star, TrendingUp } from "lucide-react";
+import { Play, Clock, Users, Star, TrendingUp, Loader2 } from "lucide-react";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { ProgramCard } from "@/components/ProgramCard";
 import { BottomNavigation } from "@/components/BottomNavigation";
 import TeamSignupModal from "@/components/TeamSignupModal";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import heroImage from "@/assets/hero-strong-man-new.jpg";
-import strengthImage from "@/assets/workout-strength.jpg";
-import recoveryImage from "@/assets/workout-recovery.jpg";
-import mindsetImage from "@/assets/workout-mindset.jpg";
 
-const programsData = [
-  {
-    title: "The Legacy Transformation",
-    description: "A complete 30-day program designed for men 40+ to build lasting strength, confidence, and leadership qualities.",
-    duration: "30 Days",
-    participants: "Expert-Designed",
-    rating: 0,
-    difficulty: "Intermediate" as const,
-    image: strengthImage,
-    isPopular: true
-  },
-  {
-    title: "Foundation Builder",
-    description: "Perfect for beginners. Establish proper movement patterns and build a solid fitness foundation over 14 days.",
-    duration: "14 Days",
-    participants: "Science-Based",
-    rating: 0,
-    difficulty: "Beginner" as const,
-    image: recoveryImage
-  },
-  {
-    title: "Elite Performance",
-    description: "Advanced 7-day intensive for dedicated men looking to push their limits and achieve peak performance.",
-    duration: "7 Days",
-    participants: "Proven Methods",
-    rating: 0,
-    difficulty: "Advanced" as const,
-    image: mindsetImage
-  }
-];
+interface Program {
+  id: string;
+  title: string;
+  description: string;
+  duration: string;
+  participants: string;
+  rating: number;
+  difficulty: "Beginner" | "Intermediate" | "Advanced";
+  image: string;
+  isPopular: boolean;
+}
 
 const Index = () => {
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('programs')
+          .select('*')
+          .order('is_popular', { ascending: false })
+          .limit(3);
+
+        if (error) throw error;
+
+        const formattedPrograms = data.map(program => ({
+          id: program.id,
+          title: program.title,
+          description: program.description || '',
+          duration: program.duration,
+          participants: program.participants || '',
+          rating: 0,
+          difficulty: program.difficulty as "Beginner" | "Intermediate" | "Advanced",
+          image: program.image_url || '',
+          isPopular: program.is_popular || false
+        }));
+
+        setPrograms(formattedPrograms);
+      } catch (error: any) {
+        toast({
+          title: "Error loading programs",
+          description: error.message,
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPrograms();
+  }, [toast]);
+
   return (
     <div className="min-h-screen relative pb-20">
       {/* Hero Section */}
@@ -145,11 +168,17 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {programsData.map((program, index) => (
-              <ProgramCard key={index} {...program} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-accent" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {programs.map((program) => (
+                <ProgramCard key={program.id} {...program} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

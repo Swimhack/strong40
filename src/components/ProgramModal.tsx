@@ -2,13 +2,15 @@ import { X, Calendar, Users, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProgramModalProps {
   isOpen: boolean;
   onClose: () => void;
   program: {
+    id?: string;
     title: string;
     description: string;
     duration: string;
@@ -19,6 +21,7 @@ interface ProgramModalProps {
 }
 
 export const ProgramModal = ({ isOpen, onClose, program }: ProgramModalProps) => {
+  const { toast } = useToast();
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -39,12 +42,68 @@ export const ProgramModal = ({ isOpen, onClose, program }: ProgramModalProps) =>
 
   if (!isOpen) return null;
 
-  const handleStartProgram = () => {
-    toast({
-      title: "Program Started!",
-      description: `Welcome to ${program.title}. Your transformation begins now!`,
-    });
-    onClose();
+  const handleStartProgram = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to enroll in programs.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (!program.id) {
+        toast({
+          title: "Program Error",
+          description: "Program ID not found. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Check if already enrolled
+      const { data: existingEnrollment } = await supabase
+        .from('user_programs')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('program_id', program.id)
+        .maybeSingle();
+
+      if (existingEnrollment) {
+        toast({
+          title: "Already Enrolled",
+          description: "You're already enrolled in this program. Check your progress!",
+        });
+        onClose();
+        return;
+      }
+
+      // Enroll user in program
+      const { error } = await supabase
+        .from('user_programs')
+        .insert({
+          user_id: user.id,
+          program_id: program.id,
+          progress_percentage: 0,
+          status: 'active'
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Program Started!",
+        description: `Welcome to ${program.title}. Your transformation begins now!`,
+      });
+      onClose();
+    } catch (error: any) {
+      toast({
+        title: "Enrollment Failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
   };
 
   const getDifficultyColor = (level: string) => {

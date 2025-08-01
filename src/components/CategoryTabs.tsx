@@ -1,110 +1,79 @@
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { WorkoutCard } from "./WorkoutCard";
-import strengthImage from "@/assets/workout-strength.jpg";
-import recoveryImage from "@/assets/workout-recovery.jpg";
-import mindsetImage from "@/assets/workout-mindset.jpg";
-import featuredImage from "@/assets/workout-featured.jpg";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
-const workoutData = {
-  featured: [
-    {
-      title: "Legacy Builder - Full Body Strength",
-      image: featuredImage,
-      duration: "45 min",
-      difficulty: "Advanced" as const,
-      equipment: "Barbells",
-      isFeatured: true
-    },
-    {
-      title: "Iron Foundation - Core Strength",
-      image: strengthImage,
-      duration: "30 min",
-      difficulty: "Intermediate" as const,
-      equipment: "Dumbbells",
-      isNew: true
-    },
-    {
-      title: "Veteran's Victory - Upper Body",
-      image: strengthImage,
-      duration: "35 min",
-      difficulty: "Advanced" as const,
-      equipment: "Mixed"
-    }
-  ],
-  strength: [
-    {
-      title: "Champion's Circuit",
-      image: strengthImage,
-      duration: "40 min",
-      difficulty: "Advanced" as const,
-      equipment: "Barbells"
-    },
-    {
-      title: "Power & Purpose",
-      image: strengthImage,
-      duration: "35 min",
-      difficulty: "Intermediate" as const,
-      equipment: "Dumbbells"
-    },
-    {
-      title: "Strength After 40",
-      image: strengthImage,
-      duration: "30 min",
-      difficulty: "Beginner" as const,
-      equipment: "Bodyweight",
-      isNew: true
-    }
-  ],
-  recovery: [
-    {
-      title: "Restoration Ritual",
-      image: recoveryImage,
-      duration: "20 min",
-      difficulty: "Beginner" as const,
-      equipment: "Yoga Mat"
-    },
-    {
-      title: "Active Recovery Flow",
-      image: recoveryImage,
-      duration: "25 min",
-      difficulty: "Beginner" as const,
-      equipment: "Foam Roller"
-    },
-    {
-      title: "Mobility Mastery",
-      image: recoveryImage,
-      duration: "15 min",
-      difficulty: "Intermediate" as const,
-      equipment: "Stretching"
-    }
-  ],
-  mindset: [
-    {
-      title: "Morning Warrior Meditation",
-      image: mindsetImage,
-      duration: "10 min",
-      difficulty: "Beginner" as const,
-      equipment: "None"
-    },
-    {
-      title: "Leadership Visualization",
-      image: mindsetImage,
-      duration: "15 min",
-      difficulty: "Intermediate" as const,
-      equipment: "None"
-    },
-    {
-      title: "Legacy Mindset Training",
-      image: mindsetImage,
-      duration: "20 min",
-      difficulty: "Advanced" as const,
-      equipment: "Journal",
-      isNew: true
-    }
-  ]
-};
+interface Workout {
+  id: string;
+  title: string;
+  image: string;
+  duration: string;
+  difficulty: "Beginner" | "Intermediate" | "Advanced";
+  equipment: string;
+  isNew?: boolean;
+  isFeatured?: boolean;
+  category: string;
+}
 
 export const CategoryTabs = () => {
+  const [workouts, setWorkouts] = useState<Workout[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('workouts')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const formattedWorkouts = data.map(workout => ({
+          id: workout.id,
+          title: workout.title,
+          image: workout.image_url || '',
+          duration: workout.duration,
+          difficulty: workout.difficulty as "Beginner" | "Intermediate" | "Advanced",
+          equipment: workout.equipment,
+          isNew: workout.is_new || false,
+          isFeatured: workout.is_featured || false,
+          category: workout.category || 'All'
+        }));
+
+        setWorkouts(formattedWorkouts);
+      } catch (error: any) {
+        toast({
+          title: "Error loading workouts",
+          description: error.message,
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWorkouts();
+  }, [toast]);
+
+  const getWorkoutsByCategory = (category: string) => {
+    if (category === 'featured') {
+      return workouts.filter(w => w.isFeatured);
+    }
+    return workouts.filter(w => w.category.toLowerCase() === category);
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-accent" />
+      </div>
+    );
+  }
+
   return (
     <Tabs defaultValue="featured" className="w-full">
       <TabsList className="grid w-full grid-cols-4 mb-8">
@@ -116,32 +85,32 @@ export const CategoryTabs = () => {
 
       <TabsContent value="featured" className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {workoutData.featured.map((workout, index) => (
-            <WorkoutCard key={index} {...workout} />
+          {getWorkoutsByCategory('featured').map((workout) => (
+            <WorkoutCard key={workout.id} {...workout} />
           ))}
         </div>
       </TabsContent>
 
       <TabsContent value="strength" className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {workoutData.strength.map((workout, index) => (
-            <WorkoutCard key={index} {...workout} />
+          {getWorkoutsByCategory('strength').map((workout) => (
+            <WorkoutCard key={workout.id} {...workout} />
           ))}
         </div>
       </TabsContent>
 
       <TabsContent value="recovery" className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {workoutData.recovery.map((workout, index) => (
-            <WorkoutCard key={index} {...workout} />
+          {getWorkoutsByCategory('recovery').map((workout) => (
+            <WorkoutCard key={workout.id} {...workout} />
           ))}
         </div>
       </TabsContent>
 
       <TabsContent value="mindset" className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {workoutData.mindset.map((workout, index) => (
-            <WorkoutCard key={index} {...workout} />
+          {getWorkoutsByCategory('mindset').map((workout) => (
+            <WorkoutCard key={workout.id} {...workout} />
           ))}
         </div>
       </TabsContent>

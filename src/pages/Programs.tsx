@@ -1,40 +1,64 @@
+import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { ProgramCard } from "@/components/ProgramCard";
 import { BottomNavigation } from "@/components/BottomNavigation";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+interface Program {
+  id: string;
+  title: string;
+  description: string;
+  duration: string;
+  participants: string;
+  rating: number;
+  difficulty: "Beginner" | "Intermediate" | "Advanced";
+  image: string;
+  isPopular: boolean;
+}
 
 export default function Programs() {
-  const programsData = [
-    {
-      title: "Foundation Builder",
-      description: "Build essential strength and movement patterns with this comprehensive 4-week foundation program.",
-      duration: "4 Weeks",
-      participants: "Proven Methods",
-      rating: 0,
-      difficulty: "Beginner" as const,
-      image: "/src/assets/workout-strength-new.jpg",
-      isPopular: true
-    },
-    {
-      title: "Power Transformation", 
-      description: "Intensive 6-week program focused on developing real-world strength and explosive power.",
-      duration: "6 Weeks",
-      participants: "Expert Coaching",
-      rating: 0,
-      difficulty: "Intermediate" as const,
-      image: "/src/assets/workout-featured-new.jpg",
-      isPopular: false
-    },
-    {
-      title: "Elite Performance",
-      description: "Advanced 7-day intensive for dedicated men looking to push their limits and achieve peak performance.",
-      duration: "7 Days", 
-      participants: "Proven Methods",
-      rating: 0,
-      difficulty: "Advanced" as const,
-      image: "/src/assets/workout-mindset-new.jpg",
-      isPopular: false
-    }
-  ];
+  const [programs, setPrograms] = useState<Program[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const fetchPrograms = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('programs')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        const formattedPrograms = data.map(program => ({
+          id: program.id,
+          title: program.title,
+          description: program.description || '',
+          duration: program.duration,
+          participants: program.participants || '',
+          rating: 0,
+          difficulty: program.difficulty as "Beginner" | "Intermediate" | "Advanced",
+          image: program.image_url || '',
+          isPopular: program.is_popular || false
+        }));
+
+        setPrograms(formattedPrograms);
+      } catch (error: any) {
+        toast({
+          title: "Error loading programs",
+          description: error.message,
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPrograms();
+  }, [toast]);
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -54,11 +78,17 @@ export default function Programs() {
           </div>
 
           {/* Programs Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {programsData.map((program, index) => (
-              <ProgramCard key={index} {...program} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-accent" />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {programs.map((program) => (
+                <ProgramCard key={program.id} {...program} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
       

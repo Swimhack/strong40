@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      programs: {
+        Row: {
+          created_at: string
+          description: string | null
+          difficulty: string
+          duration: string
+          id: string
+          image_url: string | null
+          is_popular: boolean | null
+          participants: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          difficulty: string
+          duration: string
+          id?: string
+          image_url?: string | null
+          is_popular?: boolean | null
+          participants?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          duration?: string
+          id?: string
+          image_url?: string | null
+          is_popular?: boolean | null
+          participants?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       team_signups: {
         Row: {
           created_at: string
@@ -43,6 +82,130 @@ export type Database = {
           phone?: string | null
           signup_date?: string
           status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_programs: {
+        Row: {
+          completed_at: string | null
+          enrolled_at: string
+          id: string
+          program_id: string
+          progress_percentage: number | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          enrolled_at?: string
+          id?: string
+          program_id: string
+          progress_percentage?: number | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          enrolled_at?: string
+          id?: string
+          program_id?: string
+          progress_percentage?: number | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_programs_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workout_sessions: {
+        Row: {
+          completed_at: string | null
+          duration_minutes: number | null
+          id: string
+          notes: string | null
+          started_at: string
+          status: string | null
+          user_id: string
+          workout_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          started_at?: string
+          status?: string | null
+          user_id: string
+          workout_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          duration_minutes?: number | null
+          id?: string
+          notes?: string | null
+          started_at?: string
+          status?: string | null
+          user_id?: string
+          workout_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workout_sessions_workout_id_fkey"
+            columns: ["workout_id"]
+            isOneToOne: false
+            referencedRelation: "workouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workouts: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          difficulty: string
+          duration: string
+          equipment: string
+          id: string
+          image_url: string | null
+          is_featured: boolean | null
+          is_new: boolean | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty: string
+          duration: string
+          equipment: string
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean | null
+          is_new?: boolean | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          difficulty?: string
+          duration?: string
+          equipment?: string
+          id?: string
+          image_url?: string | null
+          is_featured?: boolean | null
+          is_new?: boolean | null
+          title?: string
           updated_at?: string
         }
         Relationships: []

@@ -3,12 +3,14 @@ import { X, Play, Clock, Zap, Dumbbell, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface WorkoutModalProps {
   isOpen: boolean;
   onClose: () => void;
   workout: {
+    id?: string;
     title: string;
     image: string;
     duration: string;
@@ -20,15 +22,54 @@ interface WorkoutModalProps {
 
 export const WorkoutModal = ({ isOpen, onClose, workout }: WorkoutModalProps) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const { toast } = useToast();
 
   if (!isOpen) return null;
 
-  const handleStartWorkout = () => {
-    toast({
-      title: "Workout Started!",
-      description: `Starting ${workout.title}. Let's build that strength!`,
-    });
-    onClose();
+  const handleStartWorkout = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to start workouts.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (!workout.id) {
+        toast({
+          title: "Workout Error",
+          description: "Workout ID not found. Please try again.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Create workout session
+      const { error } = await supabase
+        .from('workout_sessions')
+        .insert({
+          user_id: user.id,
+          workout_id: workout.id,
+          status: 'started'
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Workout Started!",
+        description: `Starting ${workout.title}. Let's build that strength!`,
+      });
+      onClose();
+    } catch (error: any) {
+      toast({
+        title: "Failed to Start Workout",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
   };
 
   const handleBookmark = () => {
